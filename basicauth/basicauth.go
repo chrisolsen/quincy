@@ -10,7 +10,7 @@ import (
 )
 
 // Auth is the function type of the custom function that is required to perform the custom authentication
-type Auth func(name, password string) bool
+type Auth func(c context.Context, name, password string) (context.Context, bool)
 
 // Authenticate performs the authentication using the passed in auth function
 func Authenticate(auth Auth) quince.Middleware {
@@ -38,7 +38,9 @@ func Authenticate(auth Auth) quince.Middleware {
 		if len(parts) != 2 {
 			return reject()
 		}
-		if !auth(parts[0], parts[1]) {
+
+		c, ok := auth(c, parts[0], parts[1])
+		if !ok {
 			return reject()
 		}
 

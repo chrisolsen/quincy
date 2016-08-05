@@ -5,7 +5,6 @@ import (
 
 	"github.com/chrisolsen/quince/urlparams"
 	"github.com/julienschmidt/httprouter"
-
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 )
