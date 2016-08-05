@@ -40,3 +40,22 @@ func Test_URLParams(t *testing.T) {
 
 	http.Handle("/", router)
 }
+
+func Test_MiddlewareCancel(t *testing.T) {
+
+	mw1 := func(c context.Context, w http.ResponseWriter, r *http.Request) context.Context {
+		c, cancel := context.WithCancel(c)
+		cancel()
+		return c
+	}
+
+	mw2 := func(c context.Context, w http.ResponseWriter, r *http.Request) context.Context {
+		t.Error("Should not make it to this middleware")
+		return c
+	}
+
+	c := context.Background()
+	list := New(mw1, mw2)
+
+	list.Run(c, nil, nil)
+}

@@ -63,7 +63,10 @@ func (q *Q) Then(fn HandlerFunc) func(http.ResponseWriter, *http.Request, httpro
 		c := appengine.NewContext(r)
 		c = urlparams.Put(c, p)
 		c = chn(c, w, r)
-		fn(c, w, r)
+
+		if c.Err() == nil {
+			fn(c, w, r)
+		}
 	}
 }
 
@@ -80,6 +83,9 @@ func chain(fns []Middleware) Middleware {
 func link(current, next Middleware) Middleware {
 	return func(c context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 		c = current(c, w, r)
+		if c.Err() != nil {
+			return c
+		}
 		if next != nil {
 			c = next(c, w, r)
 		}
