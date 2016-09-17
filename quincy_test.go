@@ -26,7 +26,7 @@ func Test_Context(t *testing.T) {
 			return nil
 		}
 
-		return nil
+		return c
 	}
 
 	c := context.Background()
