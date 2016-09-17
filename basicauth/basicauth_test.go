@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chrisolsen/quince"
+	"github.com/chrisolsen/quincy"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/aetest"
@@ -103,6 +103,6 @@ func Test_StoreAuthTokenInContext(t *testing.T) {
 		return c
 	}
 
-	q := quince.New(mw1, mw2)
+	q := quincy.New(mw1, mw2)
 	q.Run(c, w, r)
 }

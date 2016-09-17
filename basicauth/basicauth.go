@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/chrisolsen/quince"
+	"github.com/chrisolsen/quincy"
 	"golang.org/x/net/context"
 )
 
@@ -13,7 +13,7 @@ import (
 type Auth func(c context.Context, name, password string) (context.Context, bool)
 
 // Authenticate performs the authentication using the passed in auth function
-func Authenticate(auth Auth) quince.Middleware {
+func Authenticate(auth Auth) quincy.Middleware {
 	return func(c context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 		reject := func() context.Context {
 			w.Header().Set("WWW-Authenticate", `Basic realm=""`)

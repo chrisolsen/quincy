@@ -1,4 +1,4 @@
-package quince
+package quincy
 
 import (
 	"net/http"

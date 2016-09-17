@@ -1,9 +1,9 @@
-package quince
+package quincy
 
 import (
 	"net/http"
 
-	"github.com/chrisolsen/quince/urlparams"
+	"github.com/chrisolsen/quincy/urlparams"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
