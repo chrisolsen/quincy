@@ -40,4 +40,3 @@ func accountHandler(c context.Context, w http.ResponseWriter, r *http.Request) {
 ## License
 
 MIT License
->>>>>>> init
