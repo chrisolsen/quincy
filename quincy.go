@@ -104,6 +104,14 @@ func chain(fns []Middleware) Middleware {
 		next = link(fns[i], next)
 	}
 
+	// if there is no middleware a non-nil function is required to allow the final
+	// handler function to be called
+	if count == 0 {
+		next = func(c context.Context, w http.ResponseWriter, r *http.Request) context.Context {
+			return c
+		}
+	}
+
 	return next
 }
 

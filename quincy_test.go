@@ -51,3 +51,12 @@ func Test_MiddlewareCancel(t *testing.T) {
 
 	list.Run(c, nil, nil)
 }
+
+func Test_NoMiddleware(t *testing.T) {
+	c := context.Background()
+	q := New()
+	q.Then(func(c context.Context, w http.ResponseWriter, r *http.Request) {
+		// nothing to see here, this test passes by not blowing up
+	})
+	q.Run(c, nil, nil)
+}
