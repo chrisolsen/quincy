@@ -10,7 +10,7 @@ import (
 // Middleware is a http.HandlerFunc that also includes a context and url params variables
 type Middleware func(context.Context, http.ResponseWriter, *http.Request) context.Context
 
-// HandlerFunc ...
+// HandlerFunc much like the standard http.HandlerFunc, but includes the request context
 type HandlerFunc func(context.Context, http.ResponseWriter, *http.Request)
 
 // Handler much like the standard http.Handler, but includes the request context
@@ -39,7 +39,8 @@ type Q struct {
 }
 
 // New initializes the middleware chain with one or more handler functions.
-// The returned pointer allows for additional middleware methods to be added or for the chain to be run.
+// The returned pointer allows for additional middleware methods to be added or
+// for the chain to be run.
 //	q := que.New(foo, bar)
 func New(fns ...Middleware) *Q {
 	q := Q{}
@@ -47,7 +48,8 @@ func New(fns ...Middleware) *Q {
 	return &q
 }
 
-// Add allows for one or more middleware handler functions to be added to the existing chain
+// Add allows for one or more middleware handler functions to be added to the
+// existing chain
 //	q := que.New(cors, format)
 //	q.Add(auth)
 func (q *Q) Add(fns ...Middleware) {
@@ -105,6 +107,7 @@ func chain(fns []Middleware) Middleware {
 	return next
 }
 
+// links the two middleware functions to allow the first to call the next on completion
 func link(current, next Middleware) Middleware {
 	return func(c context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 		c = current(c, w, r)
