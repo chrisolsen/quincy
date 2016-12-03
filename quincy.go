@@ -3,8 +3,6 @@ package quincy
 import (
 	"net/http"
 
-	"github.com/chrisolsen/quincy/urlparams"
-	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 )
@@ -53,14 +51,11 @@ func (q *Q) Run(c context.Context, w http.ResponseWriter, r *http.Request) {
 // Then returns the chain of existing middleware that includes the final HandlerFunc argument.
 //	q := que.New(foo, bar)
 //  router.Get("/", q.Then(handleRoot))
-// The url params are also saved into the context allowing the values to be accessed with the
-// middleware and final endpoint method.
-func (q *Q) Then(fn HandlerFunc) func(http.ResponseWriter, *http.Request, httprouter.Params) {
+func (q *Q) Then(fn HandlerFunc) func(http.ResponseWriter, *http.Request) {
 	chn := chain(q.fns)
 
-	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		c := appengine.NewContext(r)
-		c = urlparams.Put(c, p)
 		c = chn(c, w, r)
 
 		if c.Err() == nil {

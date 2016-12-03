@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/julienschmidt/httprouter"
-
 	"golang.org/x/net/context"
 )
 
@@ -33,12 +31,6 @@ func Test_Context(t *testing.T) {
 	list := New(mw1, mw2)
 
 	list.Run(c, nil, nil)
-}
-
-func Test_URLParams(t *testing.T) {
-	router := httprouter.New()
-
-	http.Handle("/", router)
 }
 
 func Test_MiddlewareCancel(t *testing.T) {
