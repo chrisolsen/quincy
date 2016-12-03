@@ -13,6 +13,26 @@ type Middleware func(context.Context, http.ResponseWriter, *http.Request) contex
 // HandlerFunc ...
 type HandlerFunc func(context.Context, http.ResponseWriter, *http.Request)
 
+// Handler much like the standard http.Handler, but includes the request context
+// in the ServeHTTP method
+type Handler interface {
+	ServeHTTP(context.Context, http.ResponseWriter, *http.Request)
+}
+
+// handler allows the middleware calls to be wrapped up into a Handler interface
+type handler struct {
+	mw      Middleware
+	handler Handler
+}
+
+func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	c = h.mw(c, w, r)
+	if c.Err() == nil {
+		h.handler.ServeHTTP(c, w, r)
+	}
+}
+
 // Q allows a list middleware functions to be created and run
 type Q struct {
 	fns []Middleware
@@ -64,6 +84,17 @@ func (q *Q) Then(fn HandlerFunc) func(http.ResponseWriter, *http.Request) {
 	}
 }
 
+// Handle accepts a Handler interface and returns the chain of existing middleware
+// that includes the final Handler argument.
+//	q := que.New(foo, bar)
+//  router.Get("/", q.Then(handleRoot))
+func (q *Q) Handle(h Handler) http.Handler {
+	mw := chain(q.fns)
+	return handler{mw: mw, handler: h}
+}
+
+// converts the middleware slice into a series of middleware functions and returns
+// a reference to the first middleware item in the chain
 func chain(fns []Middleware) Middleware {
 	var next Middleware
 	var count = len(fns)
